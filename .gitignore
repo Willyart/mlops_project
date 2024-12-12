@@ -1,5 +1,8 @@
 # Data used to train the models
-data/
+data/data/predictions/
+data/to_predict/
+data/test/
+data/train/
 
 # Evaluation results
 evaluation/
