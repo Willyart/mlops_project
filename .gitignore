@@ -1,0 +1,17 @@
+# Data used to train the models
+data/
+
+# Evaluation results
+evaluation/
+
+# The models
+models/
+
+## Python
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Byte-compiled / optimized / DLL files
+.DS_Store
