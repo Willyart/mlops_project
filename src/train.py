@@ -1,6 +1,7 @@
 import argparse
 from os import path
 from ultralytics import YOLO
+import yaml
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Entraîner un modèle YOLO sur un dataset.")
@@ -19,14 +20,16 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    train_params = yaml.safe_load(open("params.yaml"))["train"]
+
     data_yaml = path.abspath("datasets/data/data.yaml")
     model = YOLO(args.model_path)
     
     model.train(
         data=data_yaml,
-        epochs=args.epochs,
+        epochs=train_params["epochs"],
         imgsz=args.imgsz,
-        batch=args.batch,
+        batch=train_params["batch"],
         project=args.project_dir,
         name=args.name
     )

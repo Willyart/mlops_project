@@ -1,0 +1,3 @@
+train:
+  epochs: 80
+  batch: 8

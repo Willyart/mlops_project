@@ -1,14 +1,3 @@
-# Data used to train the models
-datasets/data/to_predict/
-datasets/data/test/
-datasets/data/train/
-
-# Evaluation results
-evaluation/
-
-# The models
-models/
-
 ## Python
 .venv/
 
@@ -17,3 +6,5 @@ __pycache__/
 
 # Byte-compiled / optimized / DLL files
 .DS_Store
+
+/models

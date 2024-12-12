@@ -1,0 +1,19 @@
+stages:
+  data_preprocessing:
+    cmd: python3 src/data_preprocessing.py
+    deps:
+      - src/data_preprocessing.py
+  train:
+    cmd: python3 src/train.py
+    deps:
+      - src/train.py
+    params:
+      - train
+    outs:
+      - models
+  evaluate:
+    cmd: python3 src/evaluation.py
+    deps:
+      - src/evaluation.py
+    metrics:
+      - datasets/data/evaluation/metrics.json
