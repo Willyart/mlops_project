@@ -7,8 +7,8 @@ def class_name_to_index(class_name):
     """Mappe les noms de classes aux indices YOLO."""
     
     mapping = {
-        'panneaux_solaires': 0,
-        'passage_pieton': 1
+        'panneaux_solaires': 1,
+        'passage_pieton': 0
     }
     return mapping.get(class_name, -1)
 
@@ -91,7 +91,7 @@ def process_dataset(dataset_dir):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convertir les annotations Labelme en YOLO et générer data.yaml.")
 
-    parser.add_argument('--base_dir', type=str, default='./data', help='Chemin de base vers le dataset contenant train/ et test/.')
+    parser.add_argument('--base_dir', type=str, default='./datasets/data', help='Chemin de base vers le dataset contenant train/ et test/.')
     
 
     args = parser.parse_args()
@@ -106,9 +106,9 @@ if __name__ == "__main__":
 
     # Création du fichier data.yaml
     data_yaml_content = """train: train/images
-    val: test/images
-    nc: 2
-    names: ['passage_pieton', 'panneaux_solaires']
+val: test/images
+nc: 2
+names: ['passage_pieton', 'panneaux_solaires']
     """
     data_yaml_path = path.join(base_dir, 'data.yaml')
     with open(data_yaml_path, 'w') as f:

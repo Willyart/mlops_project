@@ -19,9 +19,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    data_yaml = path.join(args.base_dir, 'data.yaml')
+    data_yaml = path.abspath("datasets/data/data.yaml")
     model = YOLO(args.model_path)
-
+    
     model.train(
         data=data_yaml,
         epochs=args.epochs,

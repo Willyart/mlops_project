@@ -8,7 +8,7 @@ from ultralytics import YOLO
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Prédire avec un modèle YOLO sur un ensemble d'images.")
-    parser.add_argument('--base_dir', type=str, default='./data',
+    parser.add_argument('--base_dir', type=str, default='./datasets/data',
                         help='Chemin de base vers le dataset contenant to_predict/.')
     parser.add_argument('--model_path', type=str, default='./models/crossingsSolars_yolo11/weights/best.pt',
                         help='Chemin vers le poids du modèle YOLO entraîné (ex: best.pt).')

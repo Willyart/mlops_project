@@ -1,0 +1,4 @@
+train: train/images
+val: test/images
+nc: 2
+names: ["panneaux_solaires", "passage_pieton"]
