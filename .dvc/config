@@ -1,2 +1,5 @@
 [core]
     autostage = true
+    remote = data
+['remote "data"']
+    url = gs://bucket-mlops-project-a-b-d-g-m/dvcstore

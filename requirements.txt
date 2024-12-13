@@ -1,4 +1,4 @@
 ultralytics
 opencv-python-headless
 matplotlib
-dvc==3.58.0
+dvc[gs]==3.58.0
