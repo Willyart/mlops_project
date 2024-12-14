@@ -1,15 +1,10 @@
 name: MLOps
 
 on:
-  # Runs on pushes targeting main branch
   push:
     branches:
       - main
-
-  # Runs on pull requests
   pull_request:
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -22,7 +17,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.10' # Downgraded to ensure compatibility
           cache: pip
       - name: Install dependencies
         run: pip install --requirement requirements-freeze.txt
@@ -32,6 +27,12 @@ jobs:
           credentials_json: '${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}'
       - name: Train model
         run: dvc repro --pull
+      - name: Run predictions
+        run: |
+          python src/predict.py \
+            --base_dir ./datasets/data \
+            --model_path ./models/crossingsSolars_yolo11/weights/best.pt \
+            --output_dir predictions
       - name: Setup CML
         if: github.event_name == 'pull_request'
         uses: iterative/setup-cml@v2
@@ -42,46 +43,22 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Fetch all other Git branches
           git fetch --depth=1 origin main:main
 
-          # Add title to the report
           echo "# Experiment Report (${{ github.sha }})" >> report.md
-
-          # Compare parameters to main branch
           echo "## Params workflow vs. main" >> report.md
           dvc params diff main --md >> report.md
-
-          # Compare metrics to main branch
           echo "## Metrics workflow vs. main" >> report.md
           dvc metrics diff main --md >> report.md
 
-          # Compare plots (images) to main branch
-          dvc plots diff main
-
-          # Create plots
           echo "## Plots" >> report.md
-
-          # Create training history plot
           echo "### Training History" >> report.md
-          echo "#### main" >> report.md
           echo '![](./dvc_plots/static/main_evaluation_plots_training_history.png "Training History")' >> report.md
-          echo "#### workspace" >> report.md
           echo '![](./dvc_plots/static/workspace_evaluation_plots_training_history.png "Training History")' >> report.md
 
-          # Create predictions preview
-          echo "### Predictions Preview" >> report.md
-          echo "#### main" >> report.md
-          echo '![](./dvc_plots/static/main_evaluation_plots_pred_preview.png "Predictions Preview")' >> report.md
-          echo "#### workspace" >> report.md
-          echo '![](./dvc_plots/static/workspace_evaluation_plots_pred_preview.png "Predictions Preview")' >> report.md
+          echo "### Predictions" >> report.md
+          for img_path in $(ls ./datasets/data/predictions | head -5); do
+            echo "![Prediction](./datasets/data/predictions/$img_path)" >> report.md
+          done
 
-          # Create confusion matrix
-          echo "### Confusion Matrix" >> report.md
-          echo "#### main" >> report.md
-          echo '![](./dvc_plots/static/main_evaluation_plots_confusion_matrix.png "Confusion Matrix")' >> report.md
-          echo "#### workspace" >> report.md
-          echo '![](./dvc_plots/static/workspace_evaluation_plots_confusion_matrix.png "Confusion Matrix")' >> report.md
-
-          # Publish the CML report
           cml comment update --target=pr --publish report.md
