@@ -17,13 +17,13 @@ stages:
     params:
       params.yaml:
         train:
-          epochs: 10
+          epochs: 6
           batch: 8
     outs:
     - path: models
       hash: md5
-      md5: 60203755398ea5c66012d8b48de76684.dir
-      size: 62729036
+      md5: 98d5c89271f47bc278abd310642e80e8.dir
+      size: 63352682
       nfiles: 21
   evaluate:
     cmd: python3 src/evaluation.py
