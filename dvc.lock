@@ -5,7 +5,7 @@ stages:
     deps:
     - path: src/data_preprocessing.py
       hash: md5
-      md5: 64ed05d6dad10cb17513bbf59076ccbd
+      md5: cb58c4d688f1822a7f934747a9904b2f
       size: 3696
   train:
     cmd: python3 src/train.py
@@ -17,13 +17,13 @@ stages:
     params:
       params.yaml:
         train:
-          epochs: 80
+          epochs: 100
           batch: 8
     outs:
     - path: models
       hash: md5
-      md5: 2ae50cfbdd22a46840e0d1b129bf57fc.dir
-      size: 65080504
+      md5: a5d7b58ce74fc91226b6bbb2e460c5ae.dir
+      size: 65495045
       nfiles: 24
   evaluate:
     cmd: python3 src/evaluation.py

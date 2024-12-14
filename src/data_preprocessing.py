@@ -7,8 +7,8 @@ def class_name_to_index(class_name):
     """Mappe les noms de classes aux indices YOLO."""
     
     mapping = {
-        'panneaux_solaires': 1,
-        'passage_pieton': 0
+        'panneaux_solaires': 0,
+        'passage_pieton': 1
     }
     return mapping.get(class_name, -1)
 
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     data_yaml_content = """train: train/images
 val: test/images
 nc: 2
-names: ['passage_pieton', 'panneaux_solaires']
+names: ['panneaux_solaires', 'passage_pieton']
     """
     data_yaml_path = path.join(base_dir, 'data.yaml')
     with open(data_yaml_path, 'w') as f:

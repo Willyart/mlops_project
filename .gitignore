@@ -4,7 +4,17 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
+/runs
+
+/datasets/data/test
+
+/datasets/data/train
+
+/datas
+
 # Byte-compiled / optimized / DLL files
 .DS_Store
 
 /models
+
+

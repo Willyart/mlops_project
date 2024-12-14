@@ -1,5 +1,5 @@
 train: train/images
 val: test/images
 nc: 2
-names: ['passage_pieton', 'panneaux_solaires']
+names: ['panneaux_solaires', 'passage_pieton']
     
