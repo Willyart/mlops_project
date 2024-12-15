@@ -1,0 +1,64 @@
+name: MLOps
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  train-and-report:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # Downgraded to ensure compatibility
+          cache: pip
+      - name: Install dependencies
+        run: pip install --requirement requirements-freeze.txt
+      - name: Login to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}'
+      - name: Train model
+        run: dvc repro --pull
+      - name: Run predictions
+        run: |
+          python src/predict.py \
+            --base_dir ./datasets/data \
+            --model_path ./models/crossingsSolars_yolo11/weights/best.pt \
+            --output_dir predictions
+      - name: Setup CML
+        if: github.event_name == 'pull_request'
+        uses: iterative/setup-cml@v2
+        with:
+          version: '0.20.6'
+      - name: Create CML report
+        if: github.event_name == 'pull_request'
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch --depth=1 origin main:main
+
+          echo "# Experiment Report (${{ github.sha }})" >> report.md
+          echo "## Params workflow vs. main" >> report.md
+          dvc params diff main --md >> report.md
+          echo "## Metrics workflow vs. main" >> report.md
+          dvc metrics diff main --md >> report.md
+
+          echo "## Plots" >> report.md
+          echo "### Training History" >> report.md
+          echo '![](./dvc_plots/static/main_evaluation_plots_training_history.png "Training History")' >> report.md
+          echo '![](./dvc_plots/static/workspace_evaluation_plots_training_history.png "Training History")' >> report.md
+
+          echo "### Predictions" >> report.md
+          for img_path in $(ls ./datasets/data/predictions | head -5); do
+            echo "![Prediction](./datasets/data/predictions/$img_path)" >> report.md
+          done
+
+          cml comment update --target=pr --publish report.md
