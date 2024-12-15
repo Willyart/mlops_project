@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 2
+names: ['panneaux_solaires', 'passage_pieton']
+
+roboflow:
+  workspace: alex-07bbm
+  project: mlops-aplvu
+  version: 5
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/alex-07bbm/mlops-aplvu/dataset/5

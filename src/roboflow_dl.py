@@ -6,6 +6,17 @@ import json
 import shutil
 
 
+import hashlib
+
+def file_checksum(file_path):
+    """Calcule la somme de contrôle (MD5) d'un fichier."""
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as f:
+        # Lire par morceaux de 4096 octets
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
 # Paramètres
 # GCS_BUCKET_NAME = "mlopps-roboflow-ds"
 # GOOGLE_APPLICATION_CREDENTIALS = "mlopps-bucket-service-account-file.json"  # Remplacez par votre chemin de fichier JSON
@@ -62,12 +73,18 @@ def main():
             # Vérifier si le fichier existe déjà dans le répertoire de destination
             dest_file_path = os.path.join(dest_directory, new_name_file)
             print(local_file_path)
-            if not os.path.exists(dest_file_path):
-                # Déplacer le fichier dans le répertoire approprié
+            if os.path.exists(dest_file_path):
+                # Comparer les checksums pour vérifier si le contenu est identique
+                if file_checksum(local_file_path) != file_checksum(dest_file_path):
+                    # Si le contenu est différent, écraser le fichier
+                    shutil.move(local_file_path, dest_file_path)
+                    print(f"Fichier {file} écrasé et déplacé vers {dest_file_path}")
+                else:
+                    print(f"Le fichier {file} existe déjà dans {dest_directory} et a le même contenu, il n'a pas été déplacé.")
+            else:
+                # Si le fichier n'existe pas dans la destination, déplacer
                 shutil.move(local_file_path, dest_file_path)
                 print(f"Fichier {file} déplacé vers {dest_file_path}")
-            else:
-                print(f"Le fichier {file} existe déjà dans {dest_directory}")
 
 
            
@@ -80,7 +97,7 @@ def main():
 
 
     print(f"Deleting dataset directory: {local_directory}")
-    shutil.rmtree(local_directory)  # Supprimer le dossier et son contenu
+    # shutil.rmtree(local_directory)  # Supprimer le dossier et son contenu
 
 if __name__ == "__main__":
     main()
