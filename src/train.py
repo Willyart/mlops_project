@@ -2,6 +2,7 @@ import argparse
 from os import path
 from ultralytics import YOLO
 import yaml
+import bentoml
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Entraîner un modèle YOLO sur un dataset.")
@@ -33,3 +34,6 @@ if __name__ == "__main__":
         project=args.project_dir,
         name=args.name
     )
+
+
+

@@ -4,7 +4,6 @@ from os import path
 import argparse
 
 def class_name_to_index(class_name):
-    """Mappe les noms de classes aux indices YOLO."""
     
     mapping = {
         'panneaux_solaires': 0,
@@ -13,13 +12,6 @@ def class_name_to_index(class_name):
     return mapping.get(class_name, -1)
 
 def convert_labelme_json_to_yolo_format(json_path, labels_dir):
-    """
-    Convertit un fichier JSON Labelme en format YOLO et sauvegarde dans le dossier /labels.
-    Le fichier JSON doit contenir:
-    - imageWidth, imageHeight : dimensions de l'image
-    - shapes : liste d'objets avec label (classe) et points (coordonnées)
-    """
-
 
     try:
         with open(json_path, 'r') as f:
@@ -58,7 +50,6 @@ def convert_labelme_json_to_yolo_format(json_path, labels_dir):
 
         output_data.append(f"{class_index} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}")
 
-    # Créer le fichier .txt correspondant
     base_name = path.splitext(path.basename(json_path))[0]
     output_file = path.join(labels_dir, base_name + '.txt')
 
@@ -70,10 +61,7 @@ def convert_labelme_json_to_yolo_format(json_path, labels_dir):
 
 
 def process_dataset(dataset_dir):
-    """
-    Traite tous les fichiers JSON d'un dossier 'dataset_dir'
-    pour les convertir au format YOLO dans le dossier labels correspondant.
-    """
+
     print(f"Traitement du répertoire : {dataset_dir}")
     labels_dir = path.join(path.dirname(dataset_dir), 'labels')
     os.makedirs(labels_dir, exist_ok=True)
@@ -83,8 +71,6 @@ def process_dataset(dataset_dir):
             json_path = path.join(dataset_dir, file_name)
             print(f"Conversion : {json_path}")
             convert_labelme_json_to_yolo_format(json_path, labels_dir)
-
-
 
 
 
@@ -100,11 +86,9 @@ if __name__ == "__main__":
     train_dir = path.join(base_dir, 'train', 'images')
     test_dir = path.join(base_dir, 'test', 'images')
 
-    # Traitement des ensembles de données
     process_dataset(train_dir)
     process_dataset(test_dir)
 
-    # Création du fichier data.yaml
     data_yaml_content = """train: train/images
 val: test/images
 nc: 2

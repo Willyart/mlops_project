@@ -10,6 +10,8 @@ __pycache__/
 
 /datasets/data/train
 
+/datasets/data/to_predict
+
 /datas
 
 # Byte-compiled / optimized / DLL files
