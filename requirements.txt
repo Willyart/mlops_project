@@ -2,5 +2,3 @@ ultralytics
 opencv-python-headless
 matplotlib
 dvc[gs]==3.58.0
-bentomlpip install -r requirements.txt
-inference-cli
